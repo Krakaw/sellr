@@ -7,6 +7,7 @@ import Home from './models/items/home.entity';
 import Tag from './models/items/tag.entity';
 import Category from './models/items/category.entity';
 import Bundle from './models/items/bundle.entity';
+import User from './models/items/user.entity';
 
 export default new DataSource({
   type: 'postgres',
@@ -16,5 +17,5 @@ export default new DataSource({
   password: config.pg.password,
   database: config.pg.db,
   namingStrategy: new SnakeNamingStrategy(),
-  entities: [Item, Photo, Home, Tag, Category, Bundle],
+  entities: [Item, Photo, Home, Tag, Category, Bundle, User],
 });

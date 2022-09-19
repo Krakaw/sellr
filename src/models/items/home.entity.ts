@@ -1,5 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToOne,
+} from 'typeorm';
 import Item from './item.entity';
+import User from './user.entity';
 
 @Entity()
 export default class Home {
@@ -8,6 +15,9 @@ export default class Home {
 
   @OneToMany(() => Item, (item) => item.home, { onDelete: 'CASCADE' })
   items: Item[];
+
+  @ManyToOne(() => User, (user) => user.homes)
+  user: User;
 
   @Column({ length: 1024 })
   name: string;

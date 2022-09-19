@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class initial1663526914955 implements MigrationInterface {
-  name = 'initial1663526914955';
+export class initial1663604344307 implements MigrationInterface {
+  name = 'initial1663604344307';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
@@ -16,6 +16,17 @@ export class initial1663526914955 implements MigrationInterface {
             )
         `);
     await queryRunner.query(`
+            CREATE TABLE "user" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "email" character varying NOT NULL,
+                "password_hash" character varying NOT NULL,
+                "created_at" TIMESTAMP NOT NULL DEFAULT NOW(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT NOW(),
+                CONSTRAINT "UQ_e12875dfb3b1d92d7d7c5377e22" UNIQUE ("email"),
+                CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id")
+            )
+        `);
+    await queryRunner.query(`
             CREATE TABLE "home" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "name" character varying(1024) NOT NULL,
@@ -25,6 +36,7 @@ export class initial1663526914955 implements MigrationInterface {
                 "payment_types" character varying,
                 "created_at" TIMESTAMP NOT NULL DEFAULT NOW(),
                 "updated_at" TIMESTAMP NOT NULL DEFAULT NOW(),
+                "user_id" uuid,
                 CONSTRAINT "PK_012205783b51369c326a1ad4a64" PRIMARY KEY ("id")
             )
         `);
@@ -66,17 +78,18 @@ export class initial1663526914955 implements MigrationInterface {
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "name" character varying NOT NULL,
                 "description" character varying,
+                "internal_note" character varying,
                 "source_url" character varying,
                 "price" integer NOT NULL DEFAULT '0',
                 "collection_date" TIMESTAMP,
                 "sold_at" TIMESTAMP,
                 "sold_price" integer,
-                "sold_to" uuid,
                 "created_at" TIMESTAMP NOT NULL DEFAULT NOW(),
                 "updated_at" TIMESTAMP NOT NULL DEFAULT NOW(),
                 "home_id" uuid,
                 "category_id" uuid,
                 "bundle_id" uuid,
+                "sold_to_id" uuid,
                 CONSTRAINT "PK_d3c0c71f23e7adcf952a1d13423" PRIMARY KEY ("id")
             )
         `);
@@ -96,6 +109,10 @@ export class initial1663526914955 implements MigrationInterface {
     await queryRunner.query(`
             ALTER TABLE "photo"
             ADD CONSTRAINT "FK_f806032ed1c9edcd808bae885dc" FOREIGN KEY ("item_id") REFERENCES "item"("id") ON DELETE CASCADE ON UPDATE NO ACTION
+        `);
+    await queryRunner.query(`
+            ALTER TABLE "home"
+            ADD CONSTRAINT "FK_8aa91f80ffd89341dc75b187b52" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
             ALTER TABLE "category"
@@ -118,6 +135,10 @@ export class initial1663526914955 implements MigrationInterface {
             ADD CONSTRAINT "FK_5eb2ae78061c828be889a378145" FOREIGN KEY ("bundle_id") REFERENCES "bundle"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
+            ALTER TABLE "item"
+            ADD CONSTRAINT "FK_11f3f2cf9adc8e237eb90c4cf0d" FOREIGN KEY ("sold_to_id") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+        `);
+    await queryRunner.query(`
             ALTER TABLE "item_tags_tag"
             ADD CONSTRAINT "FK_99b3d94fc899b071b613516fcf1" FOREIGN KEY ("item_id") REFERENCES "item"("id") ON DELETE CASCADE ON UPDATE CASCADE
         `);
@@ -135,6 +156,9 @@ export class initial1663526914955 implements MigrationInterface {
             ALTER TABLE "item_tags_tag" DROP CONSTRAINT "FK_99b3d94fc899b071b613516fcf1"
         `);
     await queryRunner.query(`
+            ALTER TABLE "item" DROP CONSTRAINT "FK_11f3f2cf9adc8e237eb90c4cf0d"
+        `);
+    await queryRunner.query(`
             ALTER TABLE "item" DROP CONSTRAINT "FK_5eb2ae78061c828be889a378145"
         `);
     await queryRunner.query(`
@@ -148,6 +172,9 @@ export class initial1663526914955 implements MigrationInterface {
         `);
     await queryRunner.query(`
             ALTER TABLE "category" DROP CONSTRAINT "FK_a8e6921acd2cebe0680831b86f1"
+        `);
+    await queryRunner.query(`
+            ALTER TABLE "home" DROP CONSTRAINT "FK_8aa91f80ffd89341dc75b187b52"
         `);
     await queryRunner.query(`
             ALTER TABLE "photo" DROP CONSTRAINT "FK_f806032ed1c9edcd808bae885dc"
@@ -175,6 +202,9 @@ export class initial1663526914955 implements MigrationInterface {
         `);
     await queryRunner.query(`
             DROP TABLE "home"
+        `);
+    await queryRunner.query(`
+            DROP TABLE "user"
         `);
     await queryRunner.query(`
             DROP TABLE "photo"

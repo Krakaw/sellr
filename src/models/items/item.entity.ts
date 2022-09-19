@@ -12,6 +12,7 @@ import Home from './home.entity';
 import Category from './category.entity';
 import Bundle from './bundle.entity';
 import Tag from './tag.entity';
+import User from './user.entity';
 
 @Entity()
 export default class Item {
@@ -72,11 +73,8 @@ export default class Item {
   })
   soldPrice: number;
 
-  @Column({
-    type: 'uuid',
-    nullable: true,
-  })
-  soldTo: string;
+  @ManyToOne(() => User, (user) => user.items)
+  soldTo: User;
 
   @Column({ default: () => 'NOW()' })
   createdAt: Date;
