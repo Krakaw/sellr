@@ -45,6 +45,11 @@ export default class Item {
   @Column({
     nullable: true,
   })
+  internalNote: string;
+
+  @Column({
+    nullable: true,
+  })
   sourceUrl: string;
 
   @Column({

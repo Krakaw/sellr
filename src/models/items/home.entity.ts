@@ -1,12 +1,6 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  Index,
-  ManyToOne,
-  OneToMany,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import Item from './item.entity';
+
 @Entity()
 export default class Home {
   @PrimaryGeneratedColumn('uuid')
