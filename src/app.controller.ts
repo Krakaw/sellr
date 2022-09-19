@@ -3,8 +3,8 @@ import { Get, Controller, Render } from '@nestjs/common';
 @Controller()
 export class AppController {
   @Get()
-  @Render('index.hbs')
+  @Render('layouts/index.hbs')
   root() {
-    return { message: 'Hello world!' };
+    return { message: 'Hello world!', blah: 'ROAR' };
   }
 }

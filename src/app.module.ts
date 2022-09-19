@@ -5,6 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import config from './utils/config';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { ItemsService } from './items/items.service';
+import { ItemsController } from './items/items.controller';
 
 @Module({
   imports: [
@@ -19,8 +21,8 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
       autoLoadEntities: true,
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, ItemsController],
+  providers: [AppService, ItemsService],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}
